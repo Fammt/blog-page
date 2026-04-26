@@ -43,7 +43,14 @@ const isFavorited = ref(false)
 const favoriteLoading = ref(false)
 const expanded = ref(false)
 
-const isLong = computed(() => props.post.content?.length > 300)
+const isMobile = ref(false)
+
+const isLong = computed(() => {
+  const content = props.post.content
+  if (!content) return false
+  const limit = isMobile.value ? 120 : 300
+  return content.length > limit
+})
 
 const isOwner = computed(() => {
   if (!props.currentUsername) return false
@@ -92,7 +99,10 @@ async function toggleFavorite() {
   }
 }
 
-onMounted(checkFavoriteStatus)
+onMounted(() => {
+  isMobile.value = window.innerWidth < 768
+  checkFavoriteStatus()
+})
 </script>
 
 <style scoped>
