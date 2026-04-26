@@ -86,7 +86,8 @@ Environment Variables (Optional)
 
 For production, replace localhost:3000 with your Render URL in the frontend fetch calls.
 
-Project Structure
+
+## Project Structure
 
 
 blog-pages/
@@ -106,6 +107,7 @@ blog-pages/
 │   │   │   ├── profile.vue
 │   │   │   └── favourites.vue
 │   │   ├── router/
+│   │   │   └── index.js
 │   │   └── main.js
 │   └── package.json
 └── README.md
