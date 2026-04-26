@@ -2,7 +2,10 @@
   <article class="post-card">
     <div class="post-body">
       <h3 class="post-title">{{ post.title }}</h3>
-      <p class="post-content">{{ post.content }}</p>
+      <p :class="['post-content', { expanded }]">{{ post.content }}</p>
+      <button v-if="isLong" @click="expanded = !expanded" class="read-more">
+        {{ expanded ? 'Show less ↑' : 'Read more ↓' }}
+      </button>
     </div>
 
     <footer class="post-footer">
@@ -38,6 +41,9 @@ const emit = defineEmits(['edit', 'delete', 'favorite-toggled'])
 
 const isFavorited = ref(false)
 const favoriteLoading = ref(false)
+const expanded = ref(false)
+
+const isLong = computed(() => props.post.content?.length > 300)
 
 const isOwner = computed(() => {
   if (!props.currentUsername) return false
@@ -124,7 +130,32 @@ onMounted(checkFavoriteStatus)
   display: -webkit-box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
+  line-clamp: 4;
   overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.post-content.expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
+}
+
+.read-more {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: var(--color-accent);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  transition: opacity 0.15s;
+}
+
+.read-more:hover {
+  opacity: 0.7;
 }
 
 .post-footer {
