@@ -159,38 +159,25 @@ app.delete("/posts/:id", auth, async (req, res) => {
 app.get("/my-posts", auth, async (req, res) => {
     try {
         const userId = new ObjectId(req.userId);
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-        const skip = (page - 1) * limit;
-
+ 
         const posts = await db.collection("posts")
             .find({ userId })
             .sort({ createdAt: -1 })
-            .skip(skip)
-            .limit(limit)
             .toArray();
-
-        const total = await db.collection("posts").countDocuments({ userId });
-
+ 
         const user = await db.collection("users").findOne({ _id: userId });
-
+ 
         const postsWithAuthor = posts.map(post => ({
             ...post,
             authorUsername: user ? user.username : "You"
         }));
-
-        res.json({
-            posts: postsWithAuthor,
-            total,
-            page,
-            totalPages: Math.ceil(total / limit)
-        });
+ 
+        res.json(postsWithAuthor);
     } catch (err) {
         console.error("Error fetching your posts:", err);
         res.status(500).send("Error fetching your posts");
     }
 });
-
 
 // =======================
 // FAVORITES ROUTES
