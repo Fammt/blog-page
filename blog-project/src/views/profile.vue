@@ -75,7 +75,7 @@ async function loadMyPosts() {
   if (!token) return
 
   try {
-    const res = await fetch('http://localhost:3000/my-posts', {
+    const res = await fetch('https://blog-backend-0mb0.onrender.com/my-posts', {
       headers: { Authorization: token }
     })
     if (res.ok) myPosts.value = await res.json()
@@ -95,7 +95,7 @@ async function deletePost(id) {
   if (!confirm('Delete this post?')) return
 
   try {
-    const res = await fetch(`http://localhost:3000/posts/${id}`, {
+    const res = await fetch(`https://blog-backend-0mb0.onrender.com/posts/${id}`, {
       method: 'DELETE',
       headers: { Authorization: token }
     })
@@ -111,7 +111,7 @@ async function deleteAccount() {
 
   const token = localStorage.getItem('token')
   try {
-    const res = await fetch('http://localhost:3000/delete-account', {
+    const res = await fetch('https://blog-backend-0mb0.onrender.com/delete-account', {
       method: 'DELETE',
       headers: { Authorization: token }
     })

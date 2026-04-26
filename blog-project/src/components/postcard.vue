@@ -49,7 +49,7 @@ async function checkFavoriteStatus() {
   const token = localStorage.getItem('token')
   if (!token) return
   try {
-    const res = await fetch(`http://localhost:3000/favorites/check/${props.post._id}`, {
+    const res = await fetch(`https://blog-backend-0mb0.onrender.com/favorites/check/${props.post._id}`, {
       headers: { Authorization: token }
     })
     const data = await res.json()
@@ -68,7 +68,7 @@ async function toggleFavorite() {
   const method = isFavorited.value ? 'DELETE' : 'POST'
 
   try {
-    const res = await fetch(`http://localhost:3000/favorites/${props.post._id}`, {
+    const res = await fetch(`https://blog-backend-0mb0.onrender.com/favorites/${props.post._id}`, {
       method,
       headers: { Authorization: token }
     })

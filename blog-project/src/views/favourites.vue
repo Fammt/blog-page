@@ -53,7 +53,7 @@ async function loadFavorites() {
   loading.value = true
 
   try {
-    const res = await fetch('http://localhost:3000/favorites', {
+    const res = await fetch('https://blog-backend-0mb0.onrender.com/favorites', {
       headers: { Authorization: token }
     })
     if (res.ok) favoritePosts.value = await res.json()

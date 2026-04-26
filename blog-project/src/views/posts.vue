@@ -61,7 +61,7 @@ const currentUsername = ref(localStorage.getItem('username') || null)
 async function loadPosts() {
   loading.value = true
   try {
-    const res = await fetch('http://localhost:3000/posts')
+    const res = await fetch('https://blog-backend-0mb0.onrender.com/posts')
     posts.value = await res.json()
   } catch (err) {
     console.error('Failed to load posts:', err)
@@ -79,8 +79,8 @@ async function savePost() {
 
   const method = editingId.value ? 'PUT' : 'POST'
   const url = editingId.value
-    ? `http://localhost:3000/posts/${editingId.value}`
-    : 'http://localhost:3000/posts'
+    ? `https://blog-backend-0mb0.onrender.com/posts/${editingId.value}`
+    : 'https://blog-backend-0mb0.onrender.com/posts'
 
   try {
     const res = await fetch(url, {
@@ -110,7 +110,7 @@ async function deletePost(id) {
   if (!confirm('Delete this post?')) return
 
   try {
-    const res = await fetch(`http://localhost:3000/posts/${id}`, {
+    const res = await fetch(`https://blog-backend-0mb0.onrender.com/posts/${id}`, {
       method: 'DELETE',
       headers: { Authorization: token }
     })

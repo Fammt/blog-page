@@ -60,8 +60,8 @@ async function handleSubmit() {
   loading.value = true
 
   const url = mode.value === 'login'
-    ? 'http://localhost:3000/login'
-    : 'http://localhost:3000/signup'
+    ? 'https://blog-backend-0mb0.onrender.com/login'
+    : 'https://blog-backend-0mb0.onrender.com/signup'
 
   try {
     const response = await fetch(url, {
