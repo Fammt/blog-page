@@ -87,32 +87,6 @@ Environment Variables (Optional)
 For production, replace localhost:3000 with your Render URL in the frontend fetch calls.
 
 
-## Project Structure
-
-
-blog-pages/
-├── backend-blog/
-│   ├── server.js
-│   ├── package.json
-│   └── .env (not committed)
-├── blog-project/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── NavBar.vue
-│   │   │   ├── AuthForm.vue
-│   │   │   └── PostCard.vue
-│   │   ├── views/
-│   │   │   ├── home.vue
-│   │   │   ├── posts.vue
-│   │   │   ├── profile.vue
-│   │   │   └── favourites.vue
-│   │   ├── router/
-│   │   │   └── index.js
-│   │   └── main.js
-│   └── package.json
-└── README.md
-
-
 Deployment
 
 Backend (Render)
