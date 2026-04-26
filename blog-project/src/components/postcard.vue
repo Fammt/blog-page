@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 
 const props = defineProps({
   post: { type: Object, required: true },
@@ -101,7 +101,16 @@ async function toggleFavorite() {
 
 onMounted(() => {
   isMobile.value = window.innerWidth < 768
+  window.addEventListener('resize', () => {
+    isMobile.value = window.innerWidth < 768
+  })
   checkFavoriteStatus()
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', () => {
+    isMobile.value = window.innerWidth < 768
+  })
 })
 </script>
 

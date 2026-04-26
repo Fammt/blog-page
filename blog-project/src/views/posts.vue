@@ -30,7 +30,7 @@
     </section>
 
     <!-- Posts list -->
-    <div v-if="loading" class="state-message">Loading posts…</div>
+    <div v-if="loading && posts.length === 0" class="state-message">Loading posts…</div>
     <div v-else-if="posts.length === 0" class="state-message">
       No posts yet. Be the first to write one!
     </div>
@@ -44,6 +44,18 @@
         @edit="editPost"
         @delete="deletePost"
       />
+
+      <div class="load-more-wrap">
+        <button
+          v-if="hasMore"
+          @click="loadMore"
+          :disabled="loading"
+          class="btn-load-more"
+        >
+          {{ loading ? 'Loading…' : 'Load more' }}
+        </button>
+        <p v-else-if="posts.length > 0" class="all-loaded">You've reached the end</p>
+      </div>
     </div>
   </div>
 </template>
@@ -52,22 +64,39 @@
 import { ref, onMounted } from 'vue'
 import postcard from '@/components/postcard.vue'
 
+const LIMIT = 10
+
 const posts = ref([])
 const loading = ref(false)
+const hasMore = ref(true)
+const currentPage = ref(1)
 const editingId = ref(null)
 const form = ref({ title: '', content: '' })
 const currentUsername = ref(localStorage.getItem('username') || null)
 
-async function loadPosts() {
+async function loadPosts(page = 1) {
   loading.value = true
   try {
-    const res = await fetch('https://blog-backend-0mb0.onrender.com/posts')
-    posts.value = await res.json()
+    const res = await fetch(`https://blog-backend-0mb0.onrender.com/posts?page=${page}&limit=${LIMIT}`)
+    const data = await res.json()
+
+    if (page === 1) {
+      posts.value = data.posts
+    } else {
+      posts.value = [...posts.value, ...data.posts]
+    }
+
+    hasMore.value = data.hasMore
+    currentPage.value = page
   } catch (err) {
     console.error('Failed to load posts:', err)
   } finally {
     loading.value = false
   }
+}
+
+function loadMore() {
+  loadPosts(currentPage.value + 1)
 }
 
 async function savePost() {
@@ -95,7 +124,7 @@ async function savePost() {
     if (res.ok) {
       form.value = { title: '', content: '' }
       editingId.value = null
-      loadPosts()
+      loadPosts(1)
     } else {
       alert(`Failed to save: ${await res.text()}`)
     }
@@ -114,8 +143,11 @@ async function deletePost(id) {
       method: 'DELETE',
       headers: { Authorization: token }
     })
-    if (res.ok) loadPosts()
-    else alert('Failed to delete post')
+    if (res.ok) {
+      posts.value = posts.value.filter(p => p._id !== id)
+    } else {
+      alert('Failed to delete post')
+    }
   } catch (err) {
     console.error('Failed to delete post:', err)
   }
@@ -132,7 +164,6 @@ function cancelEdit() {
   form.value = { title: '', content: '' }
 }
 
-// Pre-fill from profile page edit action
 const editingPost = localStorage.getItem('editingPost')
 if (editingPost) {
   const post = JSON.parse(editingPost)
@@ -141,7 +172,7 @@ if (editingPost) {
   localStorage.removeItem('editingPost')
 }
 
-onMounted(loadPosts)
+onMounted(() => loadPosts(1))
 </script>
 
 <style scoped>
@@ -254,6 +285,37 @@ onMounted(loadPosts)
 
 .posts-list {
   margin-top: 8px;
+}
+
+.load-more-wrap {
+  text-align: center;
+  padding: 24px 0 8px;
+}
+
+.btn-load-more {
+  padding: 10px 28px;
+  background: transparent;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: var(--font-ui);
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-load-more:hover:not(:disabled) {
+  background: var(--color-accent-light);
+}
+
+.btn-load-more:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.all-loaded {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
 }
 
 @media (max-width: 480px) {
